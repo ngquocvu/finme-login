@@ -3,7 +3,29 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 /** middlewware for verify user */
-export async function verifyUser(req, res, next) {}
+export async function verifyUser(req, res, next) {
+  try {
+    const { username } = req.method == "GET" ? req.query : req.body;
+    let exist = await UserModel.findOne({ username });
+    if (!exist) return res.status(404).send({ error: "Can't find user" });
+    next();
+  } catch (error) {
+    return res.status(400).send({ error: "Authentication Error" });
+  }
+}
+
+export async function getUser(req, res) {
+  const { username } = req.params;
+  try {
+    if (!username) return res.status(404).send({ error: "Invalid username" });
+    const user = await UserModel.findOne({ username });
+    if (!user)
+      return res.status(404).send({ error: "Could not find the user" });
+    return res.status(201).send(user);
+  } catch (error) {
+    return res.status(500).send({ msg: error.message });
+  }
+}
 
 export async function register(req, res) {
   try {
@@ -54,9 +76,9 @@ export async function register(req, res) {
 }
 
 export async function login(req, res) {
-  const { username, password } = req.body;
   try {
-    const user = await UserModel.findOne({ username });
+    const { username, password } = req.body;
+    const user = await UserModel.findOne({ username }).select("+password");
     const passwordCheck = await bcrypt.compare(password, user.password);
     if (!passwordCheck) {
       return res.status(400).send({ msg: "incorrect" });
@@ -79,12 +101,19 @@ export async function login(req, res) {
   }
 }
 
-export async function getUser(req, res) {
-  res.json("login route");
-}
-
 export async function updateUser(req, res) {
-  res.json("updateUser route");
+  try {
+    const { userId } = req.user;
+    if (userId) {
+      const body = req.body;
+      UserModel.updateOne({ _id: userId }, body, (err, data) => {
+        if (err) return res.status(401).send({ err });
+        return res.status(201).send({ msg: "successfully updated" });
+      });
+    }
+  } catch (error) {
+    return res.status(401).send({ error });
+  }
 }
 
 export async function generateOTP(req, res) {
