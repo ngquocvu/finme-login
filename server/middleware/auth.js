@@ -10,3 +10,11 @@ export default async function Auth(req, res, next) {
     res.status(401).json({ error: error.message });
   }
 }
+
+export function localVariables(req, res, next) {
+  req.app.locals = {
+    OTP: null,
+    resetSession: false,
+  };
+  next();
+}
