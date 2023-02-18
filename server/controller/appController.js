@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 /** middlewware for verify user */
+export async function verifyUser(req, res, next) {}
 
 export async function register(req, res) {
   try {
