@@ -29,3 +29,5 @@ connect().then(() => {
     console.error("Cannot connect to the server");
   }
 });
+
+module.exports = app;
