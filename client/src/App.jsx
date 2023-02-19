@@ -8,11 +8,17 @@ import Profile from "./components/Profile";
 import Recovery from "./components/Recovery";
 import Reset from "./components/Reset";
 import PageNotFound from "./components/PageNotFound";
+import Auth from "./middleware/Auth";
+import ProtectedRoute from "./middleware/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Username />,
+    element: (
+      <ProtectedRoute>
+        <Username />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/register",
@@ -20,11 +26,19 @@ const router = createBrowserRouter([
   },
   {
     path: "/password",
-    element: <Password />,
+    element: (
+      <ProtectedRoute>
+        <Password />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/profile",
-    element: <Profile />,
+    element: (
+      <Auth>
+        <Profile />
+      </Auth>
+    ),
   },
   {
     path: "/recovery",

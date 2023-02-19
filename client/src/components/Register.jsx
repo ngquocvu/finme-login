@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import avatar from "../assets/profile.png";
 import styles from "../styles/Username.module.css";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useFormik } from "formik";
 import { passwordValidate } from "../helpers/validate";
 import convertToBase64 from "../helpers/imageConvert";
+import { registerUser } from "../helpers/services";
 
 const Register = () => {
   const [file, setFile] = useState();
+  const navigator = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -21,6 +23,15 @@ const Register = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       values = await Object.assign(values, { profile: file || "" });
+      let registerPromise = registerUser(values);
+      toast.promise(registerPromise, {
+        loading: "Creating...",
+        success: <b>Register successfully</b>,
+        error: (err) => {
+          return <b>{err}</b>;
+        },
+      });
+      registerPromise.then(() => navigator("/profile"));
     },
   });
 
@@ -83,8 +94,8 @@ const Register = () => {
 
             <div className="text-center py-4">
               <span className="text-gray-500">
-                Already Register
-                <Link to="/register" className="text-red-500">
+                Already Register?{" "}
+                <Link to="/" className="text-red-500">
                   Login
                 </Link>
               </span>

@@ -35,10 +35,12 @@ export async function registerUser(credentials) {
         username,
         userEmail: email,
         text: msg,
+        subject: "Welcome to our system",
       });
     }
+    return Promise.resolve({ msg });
   } catch (error) {
-    return Promise.reject({ error });
+    return Promise.reject(error.response.data.msg.error);
   }
 }
 
@@ -71,10 +73,9 @@ export async function generateOTP(username) {
       data: { code },
       status,
     } = await axios.get("/api/generateOTP", { params: { username } });
+
     if (status === 201) {
-      let {
-        data: { email },
-      } = await getUser({ username });
+      let { email } = await getUser({ username });
       let text = `Your Password recovery OTP is ${code}. Verify are recover your password.`;
       await axios.post("/api/registerMail", {
         username,
@@ -83,7 +84,7 @@ export async function generateOTP(username) {
         subject: "Password recovery OTP",
       });
     }
-    return Promise.resolve();
+    return Promise.resolve(code);
   } catch (error) {
     return Promise.reject({ error });
   }
