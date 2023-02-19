@@ -9,24 +9,22 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
-app.use(express.static("public"));
 app.use(cors());
 app.use(morgan("tiny"));
 app.disable("x-powered-by");
 
 app.get("/", (req, res) => {
-  res.sendFile("index.html", { root: path.join(__dirname, "public") });
+  res.send("Welcome to finme - backend");
 });
 
 app.use("/api", route);
 
 connect().then(() => {
   try {
-    app.listen(process.env.PORT, () => {
-      console.log(`Server connected to http://localhost:${port}`);
+    app.listen(process.env.PORT || 8080, () => {
+      console.log(`Server connected to http://localhost:${process.env.PORT}`);
     });
   } catch (error) {
     console.error("Cannot connect to the server");
   }
 });
-module.exports = app;
