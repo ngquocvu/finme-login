@@ -22,7 +22,7 @@ app.use("/api", route);
 connect().then(() => {
   try {
     app.listen(process.env.PORT || 8080, () => {
-      console.log(`Server connected to http://localhost:${process.env.PORT}`);
+      console.log(`Server connected`);
     });
   } catch (error) {
     console.error("Cannot connect to the server");
