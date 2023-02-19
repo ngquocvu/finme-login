@@ -16,8 +16,8 @@ export const registerMail = async (req, res) => {
   let MailGenerator = new Mailgen({
     theme: "default",
     product: {
-      name: "Mailgen",
-      link: "https://mailgen.js/",
+      name: "Fin me",
+      link: "https:/finme.com/",
     },
   });
   const { username, userEmail, text, subject } = req.body;
